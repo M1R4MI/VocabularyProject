@@ -3,19 +3,15 @@ using Functional.IO;
 
 namespace Functional.MenuElements;
 
-public class DictionaryMenu
+public class DictionaryMenu(DataContext dataContext)
 {
-    private DataContext dataContext;
-
-    public DictionaryMenu(DataContext dataContext)
-    {
-        this.dataContext = dataContext;
-    }
+    private DataContext dataContext = dataContext;
+    MainMenu main;
 
     public void DictionaryMenuCall()
     {
         string prompt = $" --- Dictionary Menu for {dataContext.Dictions.First().dictName} ---";
-        string[] options = { "Add Word", "Edit Word", "Search Word", "Delete Word", "To Main Menu", "Exit" };
+        string[] options = { "Add Word", "Edit Word", "Search Word", "Delete Word","Show all words", "To Main Menu", "Exit" };
         Menu dictionaryMenu = new Menu(prompt, options);
         int selectedIndex = dictionaryMenu.Run();
 
@@ -34,10 +30,13 @@ public class DictionaryMenu
                 DeleteWord();
                 break;
             case 4:
-                MainMenu main = new MainMenu(dataContext);
-                main.MainMenuCall();
+                ShowAll();
                 break;
             case 5:
+                main = new MainMenu(dataContext);
+                main.MainMenuCall();
+                break;
+            case 6:
                 Exit();
                 break;
         }
@@ -67,6 +66,13 @@ public class DictionaryMenu
             FileUtil.SaveFile(dataContext.Dictions.First().dictName, dataContext.Dictions.First().keyValues);
             Console.WriteLine("Removal was completed successfully.");
         }
+        
+        Console.WriteLine("If you want to delete some other words press \"y\"");
+        string stopKey = Console.ReadLine();
+        if (stopKey == "y" || stopKey == "Y" || stopKey == "yes" || stopKey == "у")
+            AddWord();
+
+        DictionaryMenuCall();
     }
 
     private void EditWord()
@@ -106,6 +112,7 @@ public class DictionaryMenu
         }
         
         FileUtil.SaveFile(dataContext.Dictions.First().dictName, dataContext.Dictions.First().keyValues);
+        DictionaryMenuCall();
     }
 
     public void SearchTranslation()
@@ -130,6 +137,12 @@ public class DictionaryMenu
                 string errorMessage = "This word doesn't exists.";
             }
         }
+        Console.WriteLine("If you want to proceed working with this dictionary press \"y\"");
+        string stopKey = Console.ReadLine();
+        if (stopKey == "y" || stopKey == "Y" || stopKey == "yes" || stopKey == "у")
+            DictionaryMenuCall();
+        main = new MainMenu(dataContext);
+        main.MainMenuCall();
     }
 
     private void AddWord()
@@ -175,6 +188,21 @@ public class DictionaryMenu
         string stopKey = Console.ReadLine();
         if (stopKey == "y" || stopKey == "Y" || stopKey == "yes" || stopKey == "у")
             AddWord();
+        DictionaryMenuCall();
+    }
+
+    private void ShowAll()
+    {
+        Console.WriteLine("Word     Translation");
+        foreach (var item in dataContext.Dictions.First().keyValues)
+        {
+            Console.WriteLine($"{item.Key}   {item.Value}");
+        }
+        
+        Console.WriteLine("If you want to proceed working with dictionary press \"y\"");
+        string stopKey = Console.ReadLine();
+        if (stopKey == "y" || stopKey == "Y" || stopKey == "yes" || stopKey == "у")
+            DictionaryMenuCall();
     }
     
     private void Exit()

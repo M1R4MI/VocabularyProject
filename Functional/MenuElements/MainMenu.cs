@@ -6,13 +6,13 @@ namespace Functional.MenuElements;
 
 public class MainMenu
 {
-    private DataContext dataContext;
+    private DataContext _dataContext;
     private DictionaryMenu _dictionary;
 
     public MainMenu(DataContext dataContext)
     {
-        this.dataContext = dataContext;
-        _dictionary = new DictionaryMenu(dataContext);
+        this._dataContext = dataContext;
+        _dictionary = new DictionaryMenu(_dataContext);
     }
     
     public void MainMenuCall()
@@ -54,7 +54,7 @@ public class MainMenu
             keyValues = FileUtil.OpenFile(filename)
         };
 
-        dataContext.Dictions.Add(diction);
+        _dataContext.Dictions.Add(diction);
         Console.Clear();
         _dictionary.DictionaryMenuCall();
     }
@@ -94,7 +94,7 @@ public class MainMenu
                     dictName = fileName,
                     keyValues = new Dictionary<string, string>()
                 };
-                dataContext.Dictions.Add(diction);
+                _dataContext.Dictions.Add(diction);
             }
             
         } 
@@ -104,12 +104,12 @@ public class MainMenu
 
     private void Exit()
     {
-        if(dataContext.Dictions.Count == 0)
+        if(_dataContext.Dictions.Count == 0)
         {
             Environment.Exit(0);
         }
-        string filename = dataContext.Dictions.First().dictName;
-        Dictionary<string, string> keyValuePairs = dataContext.Dictions.First().keyValues;
+        string filename = _dataContext.Dictions.First().dictName;
+        Dictionary<string, string> keyValuePairs = _dataContext.Dictions.First().keyValues;
         FileUtil.SaveFile(filename, keyValuePairs);
         Environment.Exit(0);
     }

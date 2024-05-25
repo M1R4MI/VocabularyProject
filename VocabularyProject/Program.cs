@@ -12,8 +12,6 @@ namespace VocabularyProject
         
         static void Main(string[] args)
         {
-            Console.OutputEncoding = Encoding.Unicode;
-            Console.InputEncoding = Encoding.Unicode;
             Settings.SetConsoleParam("English - Ukrainian Dictionary");
 
             dataContext = new DataContext();
