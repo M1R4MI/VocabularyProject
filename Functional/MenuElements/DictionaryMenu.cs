@@ -3,14 +3,19 @@ using Functional.IO;
 
 namespace Functional.MenuElements;
 
-public class DictionaryMenu(DataContext dataContext)
+public class DictionaryMenu
 {
-    private DataContext dataContext = dataContext;
-    MainMenu main;
-
+    private DataContext _dataContext;
+    private MainMenu main;
+    public DictionaryMenu(DataContext dataContext)
+    {
+        _dataContext = dataContext;
+        main = new MainMenu(_dataContext);
+    } 
+    
     public void DictionaryMenuCall()
     {
-        string prompt = $" --- Dictionary Menu for {dataContext.Dictions.First().dictName} ---";
+        string prompt = $" --- Dictionary Menu for {_dataContext.Dictions.First().dictName} ---";
         string[] options = { "Add Word", "Edit Word", "Search Word", "Delete Word","Show all words", "To Main Menu", "Exit" };
         Menu dictionaryMenu = new Menu(prompt, options);
         int selectedIndex = dictionaryMenu.Run();
@@ -33,7 +38,6 @@ public class DictionaryMenu(DataContext dataContext)
                 ShowAll();
                 break;
             case 5:
-                main = new MainMenu(dataContext);
                 main.MainMenuCall();
                 break;
             case 6:
@@ -49,21 +53,21 @@ public class DictionaryMenu(DataContext dataContext)
         Console.WriteLine("Write word you want to delete: ");
         keyValue = Console.ReadLine();
         
-        if (dataContext.Dictions.First().keyValues.Keys.Count == 0)
+        if (_dataContext.Dictions.First().keyValues.Keys.Count == 0)
         {
             Console.WriteLine("Word cannot be deleted because it isn't exists.");
         }
         else
         {
-            foreach (var i in dataContext.Dictions.First().keyValues.Keys)
+            foreach (var i in _dataContext.Dictions.First().keyValues.Keys)
             {
                 if (i == keyValue)
                 {
-                    FileUtil.DeleteFromFile(dataContext.Dictions.First().dictName, dataContext.Dictions.
+                    FileUtil.DeleteFromFile(_dataContext.Dictions.First().dictName, _dataContext.Dictions.
                         First().keyValues, keyValue);
                 }
             }
-            FileUtil.SaveFile(dataContext.Dictions.First().dictName, dataContext.Dictions.First().keyValues);
+            FileUtil.SaveFile(_dataContext.Dictions.First().dictName, _dataContext.Dictions.First().keyValues);
             Console.WriteLine("Removal was completed successfully.");
         }
         
@@ -86,10 +90,10 @@ public class DictionaryMenu(DataContext dataContext)
             keyValue = Console.ReadLine();
         }
         
-        if (dataContext.Dictions.First().keyValues.Keys.Contains(keyValue))
+        if (_dataContext.Dictions.First().keyValues.Keys.Contains(keyValue))
         {
-            dataContext.Dictions.First().keyValues.Remove(keyValue);
-            FileUtil.DeleteFromFile(dataContext.Dictions.First().dictName, dataContext.Dictions.First().keyValues, keyValue);
+            _dataContext.Dictions.First().keyValues.Remove(keyValue);
+            FileUtil.DeleteFromFile(_dataContext.Dictions.First().dictName, _dataContext.Dictions.First().keyValues, keyValue);
             
             Console.WriteLine("Write value to which you want to change word that you choose: ");
             newValue = Console.ReadLine();
@@ -104,14 +108,14 @@ public class DictionaryMenu(DataContext dataContext)
             {
                 newTranslation = Console.ReadLine();
             }
-            dataContext.Dictions.First().keyValues.Add(newValue,newTranslation);
+            _dataContext.Dictions.First().keyValues.Add(newValue,newTranslation);
         }
         else
         {
             Console.WriteLine("The word you choose is not exists in the dictionary or you have written it incorrectly.");
         }
         
-        FileUtil.SaveFile(dataContext.Dictions.First().dictName, dataContext.Dictions.First().keyValues);
+        FileUtil.SaveFile(_dataContext.Dictions.First().dictName, _dataContext.Dictions.First().keyValues);
         DictionaryMenuCall();
     }
 
@@ -125,7 +129,7 @@ public class DictionaryMenu(DataContext dataContext)
         {
             Console.Write("Write a word to find translation: ");
             searchKey = Console.ReadLine();
-            if(dataContext.Dictions.First().keyValues.TryGetValue(searchKey, out searchValue))
+            if(_dataContext.Dictions.First().keyValues.TryGetValue(searchKey, out searchValue))
             {
                 Console.WriteLine($"Translation of word {searchKey} is: {searchValue}");
                 translation.Add(searchKey, searchValue);
@@ -141,7 +145,6 @@ public class DictionaryMenu(DataContext dataContext)
         string stopKey = Console.ReadLine();
         if (stopKey == "y" || stopKey == "Y" || stopKey == "yes" || stopKey == "у")
             DictionaryMenuCall();
-        main = new MainMenu(dataContext);
         main.MainMenuCall();
     }
 
@@ -158,7 +161,7 @@ public class DictionaryMenu(DataContext dataContext)
             keyValue = Console.ReadLine();
         }
         
-        if (dataContext.Dictions.First().keyValues.Keys.Contains(keyValue))
+        if (_dataContext.Dictions.First().keyValues.Keys.Contains(keyValue))
         {
             Console.Write("The word you want to add is already exists.\n");
             return;
@@ -171,11 +174,11 @@ public class DictionaryMenu(DataContext dataContext)
             translationValue = Console.ReadLine();
         }
         
-        dataContext.Dictions.First().keyValues.Add(keyValue, translationValue);
+        _dataContext.Dictions.First().keyValues.Add(keyValue, translationValue);
         try
         {
-            FileUtil.SaveFile(dataContext.Dictions.First().dictName, 
-                dataContext.Dictions.First().keyValues);
+            FileUtil.SaveFile(_dataContext.Dictions.First().dictName, 
+                _dataContext.Dictions.First().keyValues);
             Console.WriteLine("Word successfully added to the dictionary.\n");
         }
         catch (IOException ex)
@@ -194,7 +197,7 @@ public class DictionaryMenu(DataContext dataContext)
     private void ShowAll()
     {
         Console.WriteLine("Word     Translation");
-        foreach (var item in dataContext.Dictions.First().keyValues)
+        foreach (var item in _dataContext.Dictions.First().keyValues)
         {
             Console.WriteLine($"{item.Key}   {item.Value}");
         }
@@ -207,12 +210,12 @@ public class DictionaryMenu(DataContext dataContext)
     
     private void Exit()
     {
-        if(dataContext.Dictions.Count == 0)
+        if(_dataContext.Dictions.Count == 0)
         {
             Environment.Exit(0);
         }
-        string filename = dataContext.Dictions.First().dictName;
-        Dictionary<string, string> keyValuePairs = dataContext.Dictions.First().keyValues;
+        string filename = _dataContext.Dictions.First().dictName;
+        Dictionary<string, string> keyValuePairs = _dataContext.Dictions.First().keyValues;
         FileUtil.SaveFile(filename, keyValuePairs);
         Environment.Exit(0);
     }
