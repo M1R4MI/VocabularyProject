@@ -4,21 +4,14 @@ using Functional.IO;
 
 namespace Functional.MenuElements;
 
-public class MainMenu
+public class MainMenu(DataContext dataContext)
 {
-    private DataContext _dataContext;
-    private DictionaryMenu _dictionary;
+    private readonly DictionaryMenu _dictionary = new(dataContext);
 
-    public MainMenu(DataContext dataContext)
-    {
-        this._dataContext = dataContext;
-        _dictionary = new DictionaryMenu(_dataContext);
-    }
-    
     public void MainMenuCall()
     {
         string prompt = " --- Main Menu ---";
-        string[] options = { "Choose dictionary", "Create new dictionary", "Exit" };
+        string[] options = ["Choose dictionary", "Create new dictionary", "Exit"];
         Menu mainMenu = new Menu(prompt, options);
         int selectedIndex = mainMenu.Run();
 
@@ -45,7 +38,7 @@ public class MainMenu
             Console.WriteLine($"{++number} {file.Name}");
         }
         Console.WriteLine("Choose dictionary");
-        number = int.Parse(Console.ReadLine()) - 1;
+        number = int.Parse(Console.ReadLine() ?? string.Empty) - 1;
         string filename = files[number].Name;
 
         Diction diction = new Diction
@@ -54,7 +47,7 @@ public class MainMenu
             keyValues = FileUtil.OpenFile(filename)
         };
 
-        _dataContext.Dictions.Add(diction);
+        dataContext.Dictions.Add(diction);
         Console.Clear();
         _dictionary.DictionaryMenuCall();
     }
@@ -67,7 +60,7 @@ public class MainMenu
         while (point)
         {
             Console.WriteLine("Write dictionary name");
-            string fileName = Console.ReadLine();
+            string? fileName = Console.ReadLine();
             fileName += ".txt";
             if (FileUtil.GetDirectoryFiles().Length == 0)
             {
@@ -94,7 +87,7 @@ public class MainMenu
                     dictName = fileName,
                     keyValues = new Dictionary<string, string>()
                 };
-                _dataContext.Dictions.Add(diction);
+                dataContext.Dictions.Add(diction);
             }
             
         } 
@@ -104,12 +97,12 @@ public class MainMenu
 
     private void Exit()
     {
-        if(_dataContext.Dictions.Count == 0)
+        if(dataContext.Dictions.Count == 0)
         {
             Environment.Exit(0);
         }
-        string filename = _dataContext.Dictions.First().dictName;
-        Dictionary<string, string> keyValuePairs = _dataContext.Dictions.First().keyValues;
+        string? filename = dataContext.Dictions.First().dictName;
+        Dictionary<string, string> keyValuePairs = dataContext.Dictions.First().keyValues;
         FileUtil.SaveFile(filename, keyValuePairs);
         Environment.Exit(0);
     }

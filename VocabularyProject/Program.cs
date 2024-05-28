@@ -1,22 +1,18 @@
-﻿using System.Text;
-using Common.ConsoleIO;
+﻿using Common.ConsoleIO;
 using Functional.Data;
 using Functional.MenuElements;
 
 namespace VocabularyProject
 {
-    class Program
+    static class Program
     {
-        private static MainMenu _mainMenu;
-        private static DataContext dataContext;
-        
-        static void Main(string[] args)
+        static void Main()
         {
             Settings.SetConsoleParam("English - Ukrainian Dictionary");
 
-            dataContext = new DataContext();
-            _mainMenu = new MainMenu(dataContext);
-            _mainMenu.MainMenuCall();
+            DataContext dataContext = new DataContext();
+            MainMenu mainMenu = new MainMenu(dataContext);
+            mainMenu.MainMenuCall();
         }
     }
 }

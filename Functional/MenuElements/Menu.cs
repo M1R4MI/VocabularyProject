@@ -1,18 +1,9 @@
 ﻿namespace Functional.MenuElements;
 
-public class Menu
+public class Menu(string prompt, string[] options)
 {
-    private int _selectedIndex;
-    private string[] _options;
-    private string _prompt;
+    private int _selectedIndex = 0;
 
-    public Menu(string prompt, string[] options)
-    {
-        this._options = options;
-        this._prompt = prompt;
-        _selectedIndex = 0;
-    }
-    
     private void MenuArea(int x, int y, int width, int height)
     {
         for(; height > 0;)
@@ -28,22 +19,22 @@ public class Menu
         
         MenuArea(0,1,34,7);
         Console.SetCursorPosition(0,0);
-        Console.WriteLine(_prompt);
+        Console.WriteLine(prompt);
         Console.SetCursorPosition(0,1);
         Console.WriteLine();
-        for (int i = 0; i < _options.Length; i++)
+        for (int i = 0; i < options.Length; i++)
         {
             if (i == _selectedIndex)
             {
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine($"{i + 1} {_options[i]} <-");
+                Console.WriteLine($"{i + 1} {options[i]} <-");
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.ForegroundColor = ConsoleColor.Gray;
             }
             else
             {
-                Console.WriteLine($"{i + 1} {_options[i]}");
+                Console.WriteLine($"{i + 1} {options[i]}");
             }
         }
     }
@@ -63,13 +54,13 @@ public class Menu
             if (keyPressed == ConsoleKey.UpArrow)
             {
                 _selectedIndex--;
-                if (_selectedIndex == -1) _selectedIndex = _options.Length - 1;
+                if (_selectedIndex == -1) _selectedIndex = options.Length - 1;
             }
         
             else if (keyPressed == ConsoleKey.DownArrow)
             {
                 _selectedIndex++;
-                if (_selectedIndex == _options.Length) _selectedIndex = 0;
+                if (_selectedIndex == options.Length) _selectedIndex = 0;
             }
         } while (keyPressed!= ConsoleKey.Enter);
         
