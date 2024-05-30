@@ -119,7 +119,7 @@ public class DictionaryMenu(DataContext dataContext)
         {
             Console.Write("Write a word to find translation: ");
             string? searchKey = Console.ReadLine();
-            if(searchKey != null && dataContext.Dictions.First().keyValues.TryGetValue(searchKey, out string? searchValue))
+            if(dataContext.Dictions.First().keyValues.TryGetValue(searchKey, out string? searchValue))
             {
                 Console.WriteLine($"Translation of word {searchKey} is: {searchValue}");
                 translation.Add(searchKey, searchValue);
@@ -132,6 +132,8 @@ public class DictionaryMenu(DataContext dataContext)
                 Console.WriteLine(errorMessage);
             }
         }
+        Console.WriteLine("\nPress any key to return to the dictionary menu.");
+        Console.ReadKey(); 
         DictionaryMenuCall();
     }
 
@@ -139,7 +141,7 @@ public class DictionaryMenu(DataContext dataContext)
     {
         Console.Clear();
         Console.WriteLine("Write value of the word you want to add to the dictionary: ");
-        var keyValue = Console.ReadLine();
+        string? keyValue = Console.ReadLine();
         
         while (keyValue == null)
         {
@@ -149,7 +151,7 @@ public class DictionaryMenu(DataContext dataContext)
         if (dataContext.Dictions.First().keyValues.Keys.Contains(keyValue))
         {
             Console.Write("The word you want to add is already exists.\n");
-            return;
+            DictionaryMenuCall();
         }
 
         Console.Write("Write translation for the word: ");
@@ -187,10 +189,9 @@ public class DictionaryMenu(DataContext dataContext)
             Console.WriteLine($"{item.Key}   {item.Value}");
         }
         
-        Console.WriteLine("If you want to proceed working with dictionary press \"y\"");
-        string? stopKey = Console.ReadLine();
-        if (stopKey == "y" || stopKey == "Y" || stopKey == "yes" || stopKey == "у")
-            DictionaryMenuCall();
+        Console.WriteLine("\nPress any key to return to the dictionary menu.");
+        Console.ReadKey();
+        DictionaryMenuCall();
     }
     
     private void Exit()

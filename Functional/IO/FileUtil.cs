@@ -61,7 +61,6 @@ public static class FileUtil
     { 
         DirectoryInfo directoryInfo = new DirectoryInfo(FilePath);
         FileInfo[] fileInfos = directoryInfo.GetFiles();
-        Console.WriteLine(FilePath);
         return fileInfos;
     }
 }

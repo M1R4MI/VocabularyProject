@@ -72,7 +72,7 @@ public class MainMenu(DataContext dataContext)
                 {
                     if (fileName == file.Name)
                     {
-                        Console.WriteLine("The dictionary exists");
+                        Console.WriteLine("The dictionary already exists.");
                         point = true;
                         break;
                     }
